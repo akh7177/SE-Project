@@ -1,0 +1,222 @@
+© All Rights Reserved |    We Make Models Work
+Agent Prompt Optimization
+Automating Prompt Improvement
+John Gilhuly, Head of Dev Rel, Arize AI
+
+Exclusive Community Discount
+June 25, 2025 | San Francisco 
+Use promo code: BUILTWITHARIZE
+($50 ticket)
+Promo ends 4/15 @ 11:59pm PT
+
+© All Rights Reserved | We Make AI Work
+Router
+Optional component that decides which next step 
+the agent will take
+Example: determine if follow up info is needed 
+Skills / execution branches & loops
+The logic chains that do the actual work
+Example: use the ﬂight search API
+Memory
+A shared memory state that can be accessed 
+by each different component
+Example: user information for 
+preferences i.e. window or aisle seat
+Components 
+of an Agent
+User: “Book me a ﬂight to San Francisco”
+
+© All Rights Reserved | We Make AI Work
+Components 
+of an Agent
+Router
+Skills / execution 
+branches & loops
+Memory
+Skill 1
+ROUTER
+User query
+“Book me a 
+ﬂight”
+Skill 2
+Determines which skill or function to call 
+to respond to the user’s query
+
+© All Rights Reserved | We Make AI Work
+Components 
+of an Agent
+Router
+Skills / execution 
+branches & loops
+Memory
+Individual logic blocks and chains that 
+can complete a task
+Unstructured 
+to Structured
+Search API
+Compare
+Products
+LLM calls
+API calls
+Application code
+Product
+search
+
+© All Rights Reserved | We Make AI Work
+Components 
+of an Agent
+Router
+Memory
+Shared state that can be accessed by 
+each component in the agent
+Skills / execution 
+branches & loops
+messages = []
+messages.append({"role": "system", "content": "You are a helpful customer 
+support assistant. Use the supplied tools to assist the user."})
+messages.append({"role": "user", "content": "Hi, can you tell me the delivery 
+date for my order?"})
+messages.append({"role": "assistant", "content": "Hi there! I can help with that. 
+Can you please provide your order ID?"})
+messages.append({"role": "user", "content": "i think it is order_12345"})
+
+
+© All Rights Reserved |    We Make AI Work
+Improving an Agent over time
+Improving
+Agent
+Collect data from
+agent
+Review 
+experiments 
+and deploy 
+agent
+Fine-tune agent Create dataset
+of failure modes
+Run evals
+Improving
+LLM Judge
+Send to human 
+labellers
+Review experiments 
+and deploy LLM Judge
+Finetune 
+LLM Judge 
+Identify failure modes 
+for LLM Judge
+Send to human 
+labellers
+Evals with low confidence 
+score
+Improved LLM Judge
+
+© All Rights Reserved |    We Make AI Work
+Improving an Agent over time
+Improving 
+Agent
+Collect data from
+agent
+Review 
+experiments 
+and deploy 
+agent 
+Fine-tune agent Create dataset
+of failure modes
+Run evals
+Improving
+LLM Judge
+Send to human 
+labellers
+Review experiments 
+and deploy LLM Judge
+Finetune 
+LLM Judge 
+Identify failure modes 
+for LLM Judge
+Send to human 
+labellers
+Evals with low confidence 
+score
+Improved LLM Judge
+
+© All Rights Reserved |    We Make AI Work
+Improving an Agent over time
+Improving
+Agent
+Collect data from
+agent
+Review 
+experiments 
+and deploy 
+agent
+Fine-tune agent Create dataset
+of failure modes
+Run evals
+Improving
+LLM Judge
+Send to human 
+labellers
+Review experiments 
+and deploy LLM Judge
+Finetune 
+LLM Judge 
+Identify failure modes 
+for LLM Judge
+Send to human 
+labellers
+Evals with low confidence 
+score
+Improved LLM Judge
+
+Techniques 
+for prompt 
+optimization
+ Gradient Prompt Optimization
+Few Shot Prompting1
+Meta Prompting2
+3
+4 Prompt Optimization Libraries
+
+© All Rights Reserved |    We Make Models Work
+Few Shot Prompting
+Include instructive 
+examples in your prompt
+Useful for almost all 
+applications
+
+© All Rights Reserved |    We Make Models Work
+Meta Prompting
+Use a separate 
+LLM to improve 
+your prompt
+A strong ﬁrst step, 
+but not repeatable
+
+© All Rights Reserved |    We Make Models Work
+Gradient Prompt Optimization
+Use tuning loss functions 
+to improve prompts
+Embedding-based
+Useful for longer, complex 
+prompts
+
+© All Rights Reserved |    We Make Models Work
+Prompt Optimization Libraries
+Most have support for the 
+multiple techniques
+Each come with their own 
+intricacies
+Useful for running multiple 
+techniques sequentially
+
+© All Rights Reserved |    We Make Models Work
+Demo
+https://bit.ly/agent-prompt-opt
+
+© All Rights Reserved |    We Make AI Work
+Thank you!
+Try Phoenix
+If you liked this, we 
+would love a ⭐
+Arize + Phoenix 
+Community

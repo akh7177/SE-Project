@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SE Project - SDLC Analysis</title>
+  <meta name="description" content="Analyse software scenarios: extract requirements, constraints, risks, and select the optimal SDLC model grounded in lecture criteria." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Palette */
+    :root {
+      --bg:        #0b1120;
+      --surface:   #111827;
+      --card:      #1a2236;
+      --border:    #27344d;
+      --accent:    #4b6a9b;
+      --accent-h:  #5d7fb5;
+      --text:      #c9d1d9;
+      --text-muted:#8b949e;
+      --heading:   #e6edf3;
+      --success:   #3fb950;
+      --error:     #f85149;
+      --tag-bg:    #1c2d45;
+      --tag-text:  #7eb8f5;
+      --radius:    8px;
+      --transition: 0.2s ease;
+    }
+
+    html { font-size: 15px; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Layout */
+    .wrapper {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+    }
+    .header p {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .header-rule {
+      margin-top: 1.2rem;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Input area */
+    .input-section {
+      margin-bottom: 2rem;
+    }
+    .input-section label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      resize: vertical;
+      transition: border var(--transition);
+      outline: none;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+    }
+    textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    /* Button */
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+    .btn {
+      padding: 0.65rem 1.8rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn:hover:not(:disabled) {
+      background: var(--accent-h);
+      transform: translateY(-1px);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .status-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .status-text.error {
+      color: var(--error);
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--text-muted);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Results */
+    .results {
+      display: none;
+      margin-top: 1rem;
+    }
+    .results.visible {
+      display: block;
+      animation: fadeUp 0.35s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.8rem 0;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .phase-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent-h);
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      background: var(--tag-bg);
+      border-radius: 4px;
+      margin-bottom: 0.6rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .card ul li {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(39,52,77,0.5);
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .card ul li:last-child {
+      border-bottom: none;
+    }
+    .card ul li strong {
+      color: var(--tag-text);
+      font-weight: 600;
+    }
+    .card p {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    /* SDLC highlight */
+    .sdlc-badge {
+      display: inline-block;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.3rem;
+    }
+    .sdlc-reason {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Workflow pipeline */
+    .workflow-pipeline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .workflow-phase {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--tag-text);
+      background: var(--tag-bg);
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .workflow-arrow {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    /* Two-column grid for signals */
+    .signal-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(39,52,77,0.5);
+      font-size: 0.85rem;
+    }
+    .signal-row:last-child { border-bottom: none; }
+    .signal-id {
+      font-weight: 600;
+      color: var(--tag-text);
+      flex-shrink: 0;
+    }
+    .signal-arrow {
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .signal-criterion {
+      color: var(--text);
+    }
+
+    /* Raw output toggle */
+    .raw-toggle {
+      margin-top: 1.2rem;
+      text-align: center;
+    }
+    .raw-toggle button {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.75rem;
+      padding: 0.35rem 1rem;
+      cursor: pointer;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .raw-toggle button:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    .raw-output {
+      display: none;
+      margin-top: 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .raw-output.visible { display: block; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .wrapper { padding: 2rem 1rem 3rem; }
+      .header h1 { font-size: 1.6rem; }
+      textarea { min-height: 140px; }
+      .workflow-pipeline { flex-direction: column; align-items: flex-start; }
+      .workflow-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Header -->
+    <header class="header">
+      <h1>SE Project</h1>
+      <p>SDLC Analysis - Requirements Extraction &amp; Model Selection</p>
+      <hr class="header-rule" />
+    </header>
+
+    <!-- Input -->
+    <section class="input-section">
+      <label for="scenario-input">Project Scenario</label>
+      <textarea id="scenario-input" placeholder="Describe your project scenario here…&#10;&#10;Include details about the team, timeline, budget, requirements clarity, customer involvement, and any other constraints."></textarea>
+      <div class="actions">
+        <button class="btn" id="run-btn">Run Analysis</button>
+        <span class="status-text" id="status"></span>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <div class="results" id="results">
+      <hr class="divider" />
+
+      <!-- Phase 1: Requirements Agent -->
+      <span class="phase-label">Phase 1 - Requirements Agent</span>
+
+      <!-- Summary -->
+      <div class="card" id="card-summary">
+        <h3>Summary</h3>
+        <p id="out-summary"></p>
+      </div>
+
+      <!-- Constraints -->
+      <div class="card" id="card-constraints">
+        <h3>Constraints</h3>
+        <ul id="out-constraints"></ul>
+      </div>
+
+      <!-- Requirements -->
+      <div class="card" id="card-requirements">
+        <h3>Requirements</h3>
+        <ul id="out-requirements"></ul>
+      </div>
+
+      <!-- Risks -->
+      <div class="card" id="card-risks">
+        <h3>Risks</h3>
+        <ul id="out-risks"></ul>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Phase 2: SDLC Selection Agent -->
+      <span class="phase-label">Phase 2 - SDLC Selection Agent</span>
+
+      <!-- Signals -->
+      <div class="card" id="card-signals">
+        <h3>Decision Signals</h3>
+        <div id="out-signals"></div>
+      </div>
+
+      <!-- Chosen SDLC -->
+      <div class="card" id="card-sdlc">
+        <h3>Chosen SDLC</h3>
+        <div class="sdlc-badge" id="out-sdlc-name"></div>
+        <div class="sdlc-reason" id="out-sdlc-reason"></div>
+      </div>
+
+      <!-- Runner-up -->
+      <div class="card" id="card-runnerup">
+        <h3>Runner-up</h3>
+        <p id="out-runnerup"></p>
+      </div>
+
+      <!-- Workflow -->
+      <div class="card" id="card-workflow">
+        <h3>Workflow</h3>
+        <div class="workflow-pipeline" id="out-workflow"></div>
+      </div>
+
+      <!-- Raw output toggle -->
+      <div class="raw-toggle">
+        <button id="raw-toggle-btn">Show Raw Output</button>
+      </div>
+      <pre class="raw-output" id="raw-output"></pre>
+    </div>
+  </div>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────
+       API CONFIG
+       Mastra dev server default: http://localhost:4111
+       Workflow endpoint: POST /api/workflows/{id}/start
+    ───────────────────────────────────────────────────────── */
+    const API_BASE = 'http://localhost:4111';
+    const WORKFLOW_ID = 'requirements-then-sdlc';
+
+    /* ─── DOM refs ─── */
+    const $input     = document.getElementById('scenario-input');
+    const $runBtn    = document.getElementById('run-btn');
+    const $status    = document.getElementById('status');
+    const $results   = document.getElementById('results');
+    const $rawToggle = document.getElementById('raw-toggle-btn');
+    const $rawOutput = document.getElementById('raw-output');
+
+    /* ─── Clean text output (strip emojis, em dashes, commas before words) ─── */
+    function cleanText(text) {
+      if (!text) return '';
+      return text
+        // Remove emojis
+        .replace(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, '')
+        // Replace em dashes with regular space-hyphen-space
+        .replace(/—/g, ' - ')
+        // Remove commas before words (e.g. ", word" -> " word" or ",word" -> "word")
+        .replace(/,\s*(?=[a-zA-Z0-9])/g, ' ');
+    }
+
+    /* ─── Run button ─── */
+    $runBtn.addEventListener('click', async () => {
+      const prompt = $input.value.trim();
+      if (!prompt) { shake($input); return; }
+
+      $runBtn.disabled = true;
+      $results.classList.remove('visible');
+      setStatus('pending', 'Analysing scenario...');
+
+      try {
+        const res = await fetch(`/api/run`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt }),
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Server ${res.status}: ${errText}`);
+        }
+
+        const data = await res.json();
+
+        // Mastra wraps result in { status, result: { ... } }
+        const result = data?.result ?? data;
+        const requirements = cleanText(result.requirements ?? '');
+        const sdlc         = cleanText(result.sdlc ?? '');
+        const documentText = cleanText(result.document ?? `${requirements}\n\n---\n\n${sdlc}`);
+
+        renderRequirements(requirements);
+        renderSdlc(sdlc);
+        $rawOutput.textContent = documentText;
+
+        $results.classList.add('visible');
+        setStatus('done', 'Analysis complete');
+      } catch (err) {
+        console.error(err);
+        setStatus('error', `Error: ${cleanText(err.message)}`);
+      } finally {
+        $runBtn.disabled = false;
+      }
+    });
+
+    /* ─── Raw toggle ─── */
+    $rawToggle.addEventListener('click', () => {
+      $rawOutput.classList.toggle('visible');
+      $rawToggle.textContent = $rawOutput.classList.contains('visible')
+        ? 'Hide Raw Output'
+        : 'Show Raw Output';
+    });
+
+    /* ─── Status helper ─── */
+    function setStatus(type, msg) {
+      $status.className = 'status-text' + (type === 'error' ? ' error' : '');
+      if (type === 'pending') {
+        $status.innerHTML = `<span class="spinner"></span>${msg}`;
+      } else {
+        $status.textContent = msg;
+      }
+    }
+
+    /* ─── Shake animation ─── */
+    function shake(el) {
+      el.style.animation = 'none';
+      el.offsetHeight; // trigger reflow
+      el.style.animation = 'shake 0.3s ease';
+    }
+
+    /* ─── Parse Requirements Agent output ─── */
+    function renderRequirements(text) {
+      const sections = parseSections(text);
+
+      document.getElementById('out-summary').textContent =
+        cleanText(sections['Summary'] || 'No summary provided.');
+
+      renderList('out-constraints',  sections['Constraints'] || '');
+      renderList('out-requirements', sections['Requirements'] || '');
+      renderList('out-risks',        sections['Risks'] || '');
+    }
+
+    /* ─── Parse SDLC Agent output ─── */
+    function renderSdlc(text) {
+      const sections = parseSections(text);
+
+      // Signals
+      const signalsEl = document.getElementById('out-signals');
+      signalsEl.innerHTML = '';
+      const signalLines = bulletLines(sections['Signals'] || '');
+      if (signalLines.length === 0) {
+        signalsEl.innerHTML = '<p style="color:var(--text-muted)">No signals extracted.</p>';
+      } else {
+        signalLines.forEach(line => {
+          const parts = line.split(/\s*->\s*/);
+          const row = document.createElement('div');
+          row.className = 'signal-row';
+          row.innerHTML = `
+            <span class="signal-id">${esc(cleanText(parts[0] || ''))}</span>
+            <span class="signal-arrow">-></span>
+            <span class="signal-criterion">${esc(cleanText(parts.slice(1).join(' -> ')))}</span>`;
+          signalsEl.appendChild(row);
+        });
+      }
+
+      // Chosen SDLC
+      const chosenRaw = cleanText(sections['Chosen SDLC'] || '').trim();
+      const colonIdx = chosenRaw.indexOf(':');
+      if (colonIdx > -1) {
+        document.getElementById('out-sdlc-name').textContent = chosenRaw.slice(0, colonIdx).trim();
+        document.getElementById('out-sdlc-reason').textContent = chosenRaw.slice(colonIdx + 1).trim();
+      } else {
+        document.getElementById('out-sdlc-name').textContent = chosenRaw;
+        document.getElementById('out-sdlc-reason').textContent = '';
+      }
+
+      // Runner-up
+      document.getElementById('out-runnerup').textContent =
+        cleanText(sections['Runner-up'] || sections['Runner up'] || 'None specified.').trim();
+
+      // Workflow
+      const workflowEl = document.getElementById('out-workflow');
+      workflowEl.innerHTML = '';
+      const workflowRaw = cleanText(sections['Workflow'] || '').trim();
+      const phases = workflowRaw.split(/\s*->\s*/).filter(Boolean);
+      phases.forEach((phase, i) => {
+        const span = document.createElement('span');
+        span.className = 'workflow-phase';
+        span.textContent = phase.trim();
+        workflowEl.appendChild(span);
+        if (i < phases.length - 1) {
+          const arrow = document.createElement('span');
+          arrow.className = 'workflow-arrow';
+          arrow.textContent = '->';
+          workflowEl.appendChild(arrow);
+        }
+      });
+    }
+
+    /* ─── Helpers ─── */
+    function parseSections(md) {
+      const out = {};
+      const parts = md.split(/^## /m);
+      parts.forEach(part => {
+        const nl = part.indexOf('\n');
+        if (nl === -1) return;
+        const title = part.slice(0, nl).trim();
+        const body  = part.slice(nl + 1).trim();
+        if (title) out[title] = body;
+      });
+      return out;
+    }
+
+    function bulletLines(text) {
+      return text
+        .split('\n')
+        .map(l => l.replace(/^[-*]\s*/, '').trim())
+        .filter(Boolean);
+    }
+
+    function renderList(elId, text) {
+      const ul = document.getElementById(elId);
+      ul.innerHTML = '';
+      const lines = bulletLines(text);
+      if (lines.length === 0) {
+        const li = document.createElement('li');
+        li.style.color = 'var(--text-muted)';
+        li.textContent = 'None.';
+        ul.appendChild(li);
+        return;
+      }
+      lines.forEach(line => {
+        const li = document.createElement('li');
+        // Bold the ID prefix (C1:, R1:, K1:, etc.)
+        const match = line.match(/^([A-Z]\d+):\s*(.*)/);
+        if (match) {
+          li.innerHTML = `<strong>${esc(cleanText(match[1]))}</strong>: ${esc(cleanText(match[2]))}`;
+        } else {
+          li.textContent = cleanText(line);
+        }
+        ul.appendChild(li);
+      });
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

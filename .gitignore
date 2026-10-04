@@ -1,0 +1,13 @@
+node_modules
+dist
+.mastra
+.runtime
+.DS_Store
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+*.duckdb
+*.duckdb.wal
+artifacts/
